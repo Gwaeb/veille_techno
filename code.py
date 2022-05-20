@@ -1,20 +1,3 @@
-# SPDX-FileCopyrightText: 2019 Kattni Rembor Adafruit Industries
-# SPDX-FileCopyrightText: 2019 Erin St Blaine for Adafruit Industries
-# SPDX-FileCopyrightText: 2019 Limor Fried for Adafruit Industries
-#
-# SPDX-License-Identifier: MIT
-
-"""
-Prop-Maker based Burning Wizard Staff
-Adafruit invests time and resources providing this open source code.
-Please support Adafruit and open source hardware by purchasing
-products from Adafruit!
-Written by Kattni Rembor, Erin St Blaine & Limor Fried for Adafruit Industries
-Copyright (c) 2020 Adafruit Industries
-Licensed under the MIT license.
-All text above must be included in any redistribution.
-"""
-
 import time
 import random
 import digitalio
@@ -25,9 +8,7 @@ import neopixel
 import adafruit_lis3dh
 
 # CHANGE TO MATCH YOUR RING AND STRIP SETUP
-NUM_RING = 0   #12 pixel ring
-NUM_STRIP = 24  # 44 pixels in my NeoPixel strip
-NUM_PIXELS = NUM_STRIP + NUM_RING  #total number of pixels
+NUM_PIXELS = 36  #total number of pixels
 
 NEOPIXEL_PIN = board.D5  # PropMaker Wing uses D5 for NeoPixel plug
 POWER_PIN = board.D10
@@ -41,7 +22,7 @@ TOP_COLOR = (255, 64, 0)  #top color is yellow-green
 YELL_COLOR = (255, 64, 0)  #yell color is purple
 
 # CUSTOMISE IDLE PULSE SPEED HERE: 0 is fast, above 0 slows down
-IDLE_PULSE_SPEED = 0.5  # Default is 0 seconds
+IDLE_PULSE_SPEED = 0.02  # Default is 0 seconds
 SWING_BLAST_SPEED = 0.007
 
 # CUSTOMISE BRIGHTNESS HERE: must be a number between 0 and 1
@@ -149,25 +130,6 @@ def mix(color_1, color_2, weight_2):
             int(color_1[1] * weight_1 + color_2[1] * weight_2),
             int(color_1[2] * weight_1 + color_2[2] * weight_2))
 
-# List of swing wav files without the .wav in the name for use with play_wav()
-swing_sounds = [
-    'swing1',
-    'swing2',
-    'swing3',
-]
-
-# List of hit wav files without the .wav in the name for use with play_wav()
-hit_sounds = [
-    'hit1',
-    'hit2',
-    'hit3',
-    'hit4',
-]
-
-# List of yell wav files without the .wav in the name for use with play_wav()
-yell_sounds = [
-    'yell1',
-]
 
 
 mode = 0  # Initial mode = OFF
@@ -182,7 +144,8 @@ while True:
     if mode == 0:  # If currently off...
         enable.value = True
         power('on', POWER_ON_SOUND_DURATION, True)  # Power up!
-        play_wav('idle', loop=True)  # Play idle sound now
+        #play_wav('sound', loop=True)  # Play idle sound now
+        #play_wav('sound')  # Play idle sound now
         mode = 1  # Idle mode
         time.sleep(1.0) #pause before moving on
 
@@ -203,12 +166,12 @@ while True:
         # comparing thresholds...use squared values instead.)
         if accel_total > HIT_THRESHOLD:  # Large acceleration on x axis = HIT
             TRIGGER_TIME = time.monotonic()  # Save initial time of hit
-            play_wav(random.choice(hit_sounds))  # Start playing 'hit' sound
+            play_wav('sound')  # Start playing 'hit' sound
             COLOR_ACTIVE = COLOR_HIT  # Set color to fade from
             mode = 3  # HIT mode
         elif mode == 1 and accel_total > SWING_THRESHOLD:  # Mild acceleration on x axis = SWING
             TRIGGER_TIME = time.monotonic()  # Save initial time of swing
-            play_wav(random.choice(swing_sounds))  # Randomly choose from available swing sounds
+            play_wav('sound')  # Randomly choose from available swing sounds
             # make a larson scanner
             strip_backup = strip[0:-1]
             for p in range(-1, len(strip)):
@@ -228,7 +191,7 @@ while True:
             # run a color down the staff, opposite of power-up
             previous = 0
             audio_start_time = time.monotonic()  # Save audio start time
-            play_wav(random.choice(yell_sounds))  # Randomly choose from available yell sounds
+            play_wav('sound')  # Randomly choose from available yell sounds
             sound_duration = YELL_SOUND_DURATION
             while True:
                 time_elapsed = time.monotonic() - audio_start_time  # Time spent playing sound
