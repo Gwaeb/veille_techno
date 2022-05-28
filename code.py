@@ -1,3 +1,20 @@
+# SPDX-FileCopyrightText: 2019 Kattni Rembor Adafruit Industries
+# SPDX-FileCopyrightText: 2019 Erin St Blaine for Adafruit Industries
+# SPDX-FileCopyrightText: 2019 Limor Fried for Adafruit Industries
+#
+# SPDX-License-Identifier: MIT
+
+"""
+Prop-Maker based Burning Wizard Staff
+Adafruit invests time and resources providing this open source code.
+Please support Adafruit and open source hardware by purchasing
+products from Adafruit!
+Written by Kattni Rembor, Erin St Blaine & Limor Fried for Adafruit Industries
+Copyright (c) 2020 Adafruit Industries
+Licensed under the MIT license.
+All text above must be included in any redistribution.
+"""
+
 import time
 import random
 import digitalio
@@ -8,7 +25,9 @@ import neopixel
 import adafruit_lis3dh
 
 # CHANGE TO MATCH YOUR RING AND STRIP SETUP
-NUM_PIXELS = 36  #total number of pixels
+NUM_RING = 0   #12 pixel ring
+NUM_STRIP = 36  # 44 pixels in my NeoPixel strip
+NUM_PIXELS = NUM_STRIP + NUM_RING  #total number of pixels
 
 NEOPIXEL_PIN = board.D5  # PropMaker Wing uses D5 for NeoPixel plug
 POWER_PIN = board.D10
@@ -132,6 +151,7 @@ def mix(color_1, color_2, weight_2):
 
 
 
+
 mode = 0  # Initial mode = OFF
 
 # Setup idle pulse
@@ -143,7 +163,7 @@ while True:
 
     if mode == 0:  # If currently off...
         enable.value = True
-        power('on', POWER_ON_SOUND_DURATION, True)  # Power up!
+        power('sound', POWER_ON_SOUND_DURATION, True)  # Power up!
         #play_wav('sound', loop=True)  # Play idle sound now
         #play_wav('sound')  # Play idle sound now
         mode = 1  # Idle mode
